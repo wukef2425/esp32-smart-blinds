@@ -1,14 +1,35 @@
 #include <Arduino.h>
+#include <WiFi.h>
 #include "config.h"
 #include "sensors.h"
-#include "weather.h"
-#include "blinds.h"
-#include "wifi_manager.h"
 #include "telemetry.h"
-#include "controller.h"
+#include "wifi_manager.h"
 
 void setup() {
+    Serial.begin(115200);
+    delay(500);
+    sensors::begin();
+    wifi_manager::begin();
+    telemetry::begin();
 }
 
 void loop() {
+    wifi_manager::update();
+
+    static uint32_t lastPublishMs = 0;
+    static bool first = true;
+    const uint32_t now = millis();
+
+    if (WiFi.status() == WL_CONNECTED &&
+        (first || now - lastPublishMs >= config::kTelemetryIntervalMs)) {
+        first = false;
+        lastPublishMs = now;   // set even on failure so we never exceed ThingSpeak's 15 s limit
+
+        telemetry::Sample sample;
+        sensors::read(sample.indoor);
+        sample.wifiRssiDbm = WiFi.RSSI();
+
+        if (sample.indoor.valid) telemetry::publish(sample);
+        else Serial.println("Sensor read failed, skipping upload");
+    }
 }
