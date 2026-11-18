@@ -4,6 +4,9 @@
 #include "config.h"
 #include "secrets.h"
 
+#include <WiFi.h>
+#include "secrets.h"
+
 namespace wifi_manager {
 namespace {
 uint32_t lastTryMs = 0;

@@ -5,6 +5,10 @@
 #include <math.h>
 #include "config.h"
 
+#include <Wire.h>
+#include <Adafruit_BMP280.h>
+#include "pins.h"
+
 namespace sensors {
 namespace {
 Adafruit_BMP280 bmp;

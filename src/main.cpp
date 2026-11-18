@@ -1,6 +1,12 @@
 #include <Arduino.h>
 #include <WiFi.h>
+#include <Wire.h>
+#include "blinds.h"
 #include "config.h"
+#include "controller.h"
+#include "display.h"
+#include "pins.h"
+#include "secrets.h"
 #include "sensors.h"
 #include "telemetry.h"
 #include "wifi_manager.h"
