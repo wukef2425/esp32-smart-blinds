@@ -10,7 +10,6 @@ void begin() {}
 
 // WARNING: setInsecure() encrypts the connection but does NOT verify the server.
 // Someone on a fake hotspot could impersonate ThingSpeak and read our write key.
-// Fine for the vertical slice; pin the root certificate later.
 void publish(const Sample& sample) {
     WiFiClientSecure client;
     client.setInsecure();

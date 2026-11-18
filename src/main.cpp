@@ -23,7 +23,7 @@ void loop() {
     if (WiFi.status() == WL_CONNECTED &&
         (first || now - lastPublishMs >= config::kTelemetryIntervalMs)) {
         first = false;
-        lastPublishMs = now;   // set even on failure so we never exceed ThingSpeak's 15 s limit
+        lastPublishMs = now;   // set even on failure to never exceed ThingSpeak's 15 s limit
 
         telemetry::Sample sample;
         sensors::read(sample.indoor);
