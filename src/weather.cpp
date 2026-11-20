@@ -4,6 +4,7 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
+#include <math.h>
 #include "config.h"
 
 namespace weather {
@@ -28,6 +29,8 @@ void begin() {
     // ip-api.com's free tier is HTTP only. A spoofed reply only changes the location.
     WiFiClient client;
     HTTPClient http;
+    // getStream() bypasses chunk decoding; request an unchunked response.
+    http.useHTTP10(true);
     http.setTimeout(8000);
     if (!http.begin(client, "http://ip-api.com/json/?fields=status,city,lat,lon")) {
         Serial.println("Geo: http.begin failed, using default location");
@@ -68,6 +71,8 @@ void fetch(Reading& reading) {
     client.setInsecure();
 
     HTTPClient http;
+    // getStream() bypasses chunk decoding; request an unchunked response.
+    http.useHTTP10(true);
     http.setTimeout(8000);
     if (!http.begin(client, url)) {
         Serial.println("Weather: http.begin failed");
@@ -97,11 +102,18 @@ void fetch(Reading& reading) {
 
     JsonVariantConst temp = doc["current"]["temperature_2m"];
     if (!temp.is<float>()) {
-        Serial.println("Weather: temperature_2m missing");
+        Serial.print("Weather: missing or nonnumeric temperature_2m, parsed: ");
+        serializeJson(doc, Serial);
+        Serial.println();
         return;
     }
 
-    reading.outdoorTempC = temp.as<float>();
+    const float temperature = temp.as<float>();
+    if (!isfinite(temperature)) {
+        Serial.println("Weather: invalid temperature_2m");
+        return;
+    }
+    reading.outdoorTempC = temperature;
     reading.valid = true;
     Serial.printf("Weather: outdoor %.1f C\n", reading.outdoorTempC);
 }
