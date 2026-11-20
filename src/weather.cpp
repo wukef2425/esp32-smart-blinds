@@ -6,6 +6,7 @@
 #include <WiFiClientSecure.h>
 #include <math.h>
 #include "config.h"
+#include "network_security.h"
 
 namespace weather {
 namespace {
@@ -14,48 +15,8 @@ float latitude = config::kLatitude;
 float longitude = config::kLongitude;
 }
 
-// Look up the device's approximate location from its public IP (ip-api.com, free, no key).
-// Called once from setup(). Blocks up to kGeoWifiWaitMs waiting for Wi-Fi.
 void begin() {
-    const uint32_t start = millis();
-    while (WiFi.status() != WL_CONNECTED && millis() - start < config::kGeoWifiWaitMs) {
-        delay(100);
-    }
-    if (WiFi.status() != WL_CONNECTED) {
-        Serial.println("Geo: no Wi-Fi, using default location");
-        return;
-    }
-
-    // ip-api.com's free tier is HTTP only. A spoofed reply only changes the location.
-    WiFiClient client;
-    HTTPClient http;
-    // getStream() bypasses chunk decoding; request an unchunked response.
-    http.useHTTP10(true);
-    http.setTimeout(8000);
-    if (!http.begin(client, "http://ip-api.com/json/?fields=status,city,lat,lon")) {
-        Serial.println("Geo: http.begin failed, using default location");
-        return;
-    }
-
-    const int code = http.GET();
-    if (code != HTTP_CODE_OK) {
-        Serial.printf("Geo: HTTP %d, using default location\n", code);
-        http.end();
-        return;
-    }
-
-    JsonDocument doc;
-    const DeserializationError err = deserializeJson(doc, http.getStream());
-    http.end();
-
-    if (err || doc["status"] != "success" || !doc["lat"].is<float>() || !doc["lon"].is<float>()) {
-        Serial.println("Geo: bad response, using default location");
-        return;
-    }
-
-    latitude = doc["lat"].as<float>();
-    longitude = doc["lon"].as<float>();
-    Serial.printf("Geo: %s (%.4f, %.4f)\n", doc["city"] | "?", latitude, longitude);
+    Serial.printf("Weather: fixed location %.4f, %.4f\n", latitude, longitude);
 }
 
 void fetch(Reading& reading) {
@@ -68,12 +29,16 @@ void fetch(Reading& reading) {
              latitude, longitude);
 
     WiFiClientSecure client;
-    client.setInsecure();
+    if (!network_security::configure(client)) {
+        Serial.println("Weather: waiting for clock sync");
+        return;
+    }
 
     HTTPClient http;
     // getStream() bypasses chunk decoding; request an unchunked response.
     http.useHTTP10(true);
-    http.setTimeout(8000);
+    http.setConnectTimeout(config::kHttpTimeoutMs);
+    http.setTimeout(config::kHttpTimeoutMs);
     if (!http.begin(client, url)) {
         Serial.println("Weather: http.begin failed");
         return;
