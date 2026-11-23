@@ -13,3 +13,4 @@ include/secrets.h
 .env
 .env.*
 !.env.example
+logs
