@@ -8,4 +8,5 @@ constexpr int kMaxRelativeAngle = 90;
 void begin();
 // Calibrated endpoints: 0 = horizontal, 90 = vertical; linear interpolation between.
 void setAngle(int angleDeg);
+int targetAngle();
 }

@@ -1,3 +1,4 @@
+#include "event_log.h"
 #include "controller.h"
 #include <Arduino.h>
 #include <math.h>
@@ -11,7 +12,7 @@ bool hot = false;
 void begin() {
     hot = false;
     blinds::setAngle(0);
-    Serial.printf("Auto: >= %.1f C -> 90, <= %.1f C -> 0\n",
+    event_log::write("Auto: >= %.1f C -> 90, <= %.1f C -> 0\n",
                   config::kHotTempC, config::kCoolTempC);
 }
 void update(const sensors::Reading& indoor, const weather::Reading& /*outdoor*/) {
@@ -23,6 +24,6 @@ void update(const sensors::Reading& indoor, const weather::Reading& /*outdoor*/)
     hot = nextHot;
     const int angle = hot ? 90 : 0;
     blinds::setAngle(angle);
-    Serial.printf("Auto: %.2f C -> %d degrees\n", indoor.indoorTempC, angle);
+    event_log::write("Auto: %.2f C -> %d degrees\n", indoor.indoorTempC, angle);
 }
 }
