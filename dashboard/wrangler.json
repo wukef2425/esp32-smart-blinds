@@ -1,0 +1,8 @@
+{
+  "name": "esp32-blinds-dashboard",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-25",
+  "assets": { "directory": "./public", "binding": "ASSETS" },
+  "vars": { "THINGSPEAK_CHANNEL_ID": "3584220" },
+  "observability": { "enabled": false }
+}
