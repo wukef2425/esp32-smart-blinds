@@ -5,10 +5,7 @@
   "assets": { "directory": "./public", "binding": "ASSETS" },
   "vars": { "THINGSPEAK_CHANNEL_ID": "3584220" },
   "observability": { "enabled": false },
-  "env": {
-    "preview": {
-      "name": "esp32-blinds-dashboard-preview",
-      "vars": { "THINGSPEAK_CHANNEL_ID": "3584220" }
-    }
+  "previews": {
+    "vars": { "THINGSPEAK_CHANNEL_ID": "3584220" }
   }
 }
