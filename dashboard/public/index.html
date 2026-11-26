@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>Smart Blinds · Team 22</title
+  ><link rel="stylesheet" href="/style.css" />
+  <script type="module" src="/app.js"></script>
+  <body>
+    <main>
+      <header>
+        <div>
+          <p class="eyebrow">CS244P · TEAM 22</p>
+          <h1>Smart blinds</h1>
+          <p class="subtitle">A window into room comfort.</p>
+        </div>
+        <span id="connection" class="badge">Connecting</span>
+      </header>
+      <section class="toolbar">
+        <span id="updated">Waiting for device data</span>
+        <div>
+          <label for="range">History</label>
+          <select id="range">
+            <option value="6">6 hours</option>
+            <option value="24" selected>24 hours</option>
+            <option value="72">72 hours</option></select
+          ><button id="refresh">Refresh</button>
+        </div>
+      </section>
+      <p id="error" role="alert" hidden></p>
+      <section class="metrics" aria-label="Latest readings">
+        <article>
+          <h2>Indoor temperature</h2>
+          <strong id="temperature">—</strong><span>°C</span>
+        </article>
+        <article>
+          <h2>Air pressure</h2>
+          <strong id="pressure">—</strong><span>hPa</span>
+        </article>
+        <article>
+          <h2>Wi-Fi signal</h2>
+          <strong id="rssi">—</strong><span>dBm</span>
+        </article>
+        <article>
+          <h2>Blind target</h2>
+          <strong id="target">—</strong
+          ><span>degrees · commanded position</span>
+        </article>
+      </section>
+      <section class="charts">
+        <article>
+          <h2>Indoor temperature <small>°C</small></h2>
+          <div id="temperature-chart" class="plot"></div>
+        </article>
+        <article>
+          <h2>Air pressure <small>hPa</small></h2>
+          <div id="pressure-chart" class="plot"></div>
+        </article>
+        <article>
+          <h2>Wi-Fi signal <small>dBm</small></h2>
+          <div id="rssi-chart" class="plot"></div>
+        </article>
+      </section>
+      <section class="details">
+        <h2>Device snapshot</h2>
+        <dl>
+          <div>
+            <dt>Outdoor temperature</dt>
+            <dd id="outdoor">—</dd>
+          </div>
+          <div>
+            <dt>Uptime since boot</dt>
+            <dd id="uptime">—</dd>
+          </div>
+          <div>
+            <dt>Boot ID</dt>
+            <dd id="boot">—</dd>
+          </div>
+          <div>
+            <dt>Upload sequence</dt>
+            <dd id="sequence">—</dd>
+          </div>
+          <div>
+            <dt>Failed uploads since boot</dt>
+            <dd id="failed">—</dd>
+          </div>
+          <div>
+            <dt>Offline slots since boot</dt>
+            <dd id="offline">—</dd>
+          </div>
+        </dl>
+      </section>
+      <footer>
+        Read-only telemetry · Refreshes every minute · Device uploads every 5
+        minutes.<br />History may be cached by ThingSpeak for 5 minutes. Gaps
+        longer than 10 minutes are shown as breaks. Missing measurements are
+        never replaced with zero.
+      </footer>
+    </main>
+  </body>
+</html>
